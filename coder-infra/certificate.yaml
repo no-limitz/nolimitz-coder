@@ -10,3 +10,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - coder.nolimitz.io
+    - "*.coder.nolimitz.io"

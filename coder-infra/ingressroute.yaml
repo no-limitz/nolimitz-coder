@@ -10,7 +10,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`coder.nolimitz.io`)
+      match: Host(`coder.nolimitz.io`) || HostRegexp(`^.+\.coder\.nolimitz\.io$`)
       services:
         - name: coder
           port: 80
