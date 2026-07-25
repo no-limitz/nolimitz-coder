@@ -16,3 +16,7 @@ spec:
           port: 80
   tls:
     secretName: coder-tls
+    domains:
+      - main: coder.nolimitz.io
+        sans:
+          - "*.coder.nolimitz.io"
