@@ -1,0 +1,26 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: coder-postgres
+  namespace: coder
+spec:
+  instances: 1
+
+  bootstrap:
+    initdb:
+      database: coder
+      owner: coder
+      # CNPG will auto-create the secret: coder-postgres-app
+      # with keys: uri, jdbc-uri, pgpass, password, username, dbname, host, port
+
+  storage:
+    size: 10Gi
+    storageClass: nfs-client
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+
+  affinity:
+    nodeSelector:
+      node-role: agentfield

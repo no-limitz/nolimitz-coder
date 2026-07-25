@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coder
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://helm.coder.com/v2
+    chart: coder
+    targetRevision: "*"
+    helm:
+      releaseName: coder
+      values: |
+        coder:
+          replicaCount: 1
+
+          image:
+            pullPolicy: Always
+
+          service:
+            type: ClusterIP
+            # Traefik IngressRoute handles external traffic (coder.nolimitz.io)
+
+          ingress:
+            enable: false
+
+          env:
+            - name: CODER_ACCESS_URL
+              value: "https://coder.nolimitz.io"
+            - name: CODER_WILDCARD_ACCESS_URL
+              value: "*.coder.nolimitz.io"
+            - name: CODER_PG_CONNECTION_URL
+              valueFrom:
+                secretKeyRef:
+                  # CNPG auto-creates this secret from the Cluster resource
+                  name: coder-postgres-app
+                  key: uri
+
+          nodeSelector:
+            node-role: agentfield
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: coder
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

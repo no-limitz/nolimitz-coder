@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coder-infra
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/no-limitz/nolimitz-coder.git
+    targetRevision: main
+    path: coder-infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: coder
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
